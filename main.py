@@ -42,6 +42,8 @@ class Game:
     up_key_pressed:bool
     down_key_pressed:bool
 
+    difficulty:int
+
     def __init__(self):
         pygame.init()
         self.gameInit()
@@ -49,6 +51,9 @@ class Game:
         self.should_quit = False
         self.up_key_pressed = False
         self.down_key_pressed = False
+
+    def changeDifficulty(self, Gamedifficulty):
+        self.difficulty = Gamedifficulty
 
     def loop(self):
         self.timer.update()
@@ -78,7 +83,7 @@ class Game:
         self.size = self.width, self.height = 640, 480
         self.black = 0,0,0
 
-        self.ball_speed=6
+        self.ball_speed= 6
         self.ballDirection_X = 1
         self.ballDirection_Y = 1
         self.ball_positionX = 300
@@ -162,20 +167,20 @@ class Window(QWidget):
     def __init__(self, game):
         super().__init__()
         self.started = False
+        self.game = game
         self.initUi()
-        self.init_pygame(game)
-        pass
+        self.init_pygame(self.game)
+
+
     def init_pygame(self, game):
         self.game = game
         self.timer = QTimer()
         self.timer.timeout.connect(self.pygame_loop)
         self.timer.start(0)
-        pass
 
     def pygame_loop(self):
         if self.game.loop():
             self.close()
-        pass
 
     def initUi(self):
         self.setWindowTitle("Py pong")
@@ -193,7 +198,6 @@ class Window(QWidget):
 
 
         self.show()
-        pass
 
     def OnClick(self):
         self.started = True
@@ -207,8 +211,10 @@ class Window(QWidget):
 
     def OnSlider(self):
         slider:QSlider = self.sender()
+        self.game.changeDifficulty(slider.value())
         print(slider.value())
         pass
+
 def main():
     app = QApplication(sys.argv)
     game = Game()
